@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Airplane Chime Sound</title>
+</head>
+
+<body>
+    <div style="margin: 0 auto; width: 200px; text-align: center;">
+        <button onclick="passengerCall()">Passenger Call</button>
+        <button onclick="seatBelts()">Seat Belts</button>
+        <button onclick="attendantCall()">Attendant Call</button>
+    </div>
+
+    <script>
+        function playChime(freq) {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.value = freq;
+
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+
+            // Start and stop the oscillator to create the chime pattern
+            const startTime = context.currentTime;
+            const endTime = startTime + 1;
+
+            gainNode.gain.setValueAtTime(1, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, endTime);
+
+            oscillator.start(startTime);
+            oscillator.stop(endTime);
+        }
+
+        function passengerCall() {
+            // D5
+            playChime(587)
+        }
+
+        function seatBelts() {
+            // B4
+            playChime(494)
+        }
+
+        function attendantCall() {
+            // D5
+            playChime(587)
+            // B4
+            setTimeout(() => {
+                playChime(494)
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>
