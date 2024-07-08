@@ -31,7 +31,8 @@
             const startTime = context.currentTime;
             const endTime = startTime + 1;
 
-            gainNode.gain.setValueAtTime(1, startTime);
+            gainNode.gain.setValueAtTime(0, startTime);
+            gainNode.gain.linearRampToValueAtTime(1, startTime + 0.02);
             gainNode.gain.exponentialRampToValueAtTime(0.01, endTime);
 
             oscillator.start(startTime);
