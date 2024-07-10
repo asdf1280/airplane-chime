@@ -25,6 +25,7 @@
         <button onclick="airbusWarning()">Airbus Warning</button>
         <button onclick="airbusWarningToggle()">Airbus Warning Toggle</button>
         <button onclick="airbusStall()">Airbus Stall</button>
+        <p>Disclaimer: These sounds are merely recreations of warning sounds using basic waveforms.</p>
     </div>
 
     <script>
@@ -100,8 +101,12 @@
             const endTime = startTime + 0.7;
 
             gainNode.gain.setValueAtTime(0, startTime);
-            gainNode.gain.linearRampToValueAtTime(0.5, startTime + 0.0);
+            gainNode.gain.linearRampToValueAtTime(1, startTime + 0.01);
             gainNode.gain.linearRampToValueAtTime(0.01, endTime);
+
+            // setTimeout(() => {
+            //    gainNode.gain.setValueAtTime(0, context.currentTime); 
+            // }, 270);
 
             oscillator.start(startTime);
             oscillator.stop(endTime);
@@ -127,7 +132,7 @@
             const oscillator = context.createOscillator();
             const gainNode = context.createGain();
 
-            oscillator.type = 'triangle';
+            oscillator.type = 'square';
             oscillator.frequency.value = freq;
 
             oscillator.connect(gainNode);
@@ -135,7 +140,7 @@
 
             // Start and stop the oscillator to create the chime pattern
             const startTime = context.currentTime + delay;
-            const endTime = startTime + (0.8 / 16);
+            const endTime = startTime + (1 / 16);
 
             gainNode.gain.setValueAtTime(0, startTime);
             gainNode.gain.linearRampToValueAtTime(0.5, startTime + 0.0);
@@ -147,7 +152,7 @@
 
         function airbusStall() {
             for (let i = 0; i < 16; i++) {
-                airbusStallFreq(i % 2 == 0 ? 1620 : 927, 0.8 / 16 * i);
+                airbusStallFreq(i % 2 == 0 ? 1620 : 927, 1 / 16 * i);
             }
         }
     </script>
