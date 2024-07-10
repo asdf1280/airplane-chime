@@ -28,9 +28,11 @@
     </div>
 
     <script>
+        const context = new (window.AudioContext || window.webkitAudioContext)();
         function playChime(freq) {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
-
+            if(context.state !== "running") {
+                context.resume();
+            }
             const oscillator = context.createOscillator();
             const gainNode = context.createGain();
 
@@ -81,8 +83,9 @@
         }
 
         function airbusWarning() {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
-
+            if(context.state !== "running") {
+                context.resume();
+            }
             const oscillator = context.createOscillator();
             const gainNode = context.createGain();
 
@@ -118,8 +121,9 @@
         }
 
         function airbusStallFreq(freq, delay) {
-            const context = new (window.AudioContext || window.webkitAudioContext)();
-
+            if(context.state !== "running") {
+                context.resume();
+            }
             const oscillator = context.createOscillator();
             const gainNode = context.createGain();
 
