@@ -5,13 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Airplane Chime Sound</title>
+    <style>
+        .main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+    </style>
 </head>
 
 <body>
-    <div style="margin: 0 auto; width: 200px; text-align: center;">
+    <div class="main">
         <button onclick="passengerCall()">Passenger Call</button>
         <button onclick="seatBelts()">Seat Belts</button>
         <button onclick="attendantCall()">Attendant Call</button>
+        <button onclick="acarsCall()">PMDG ACARS Call</button>
+        <button onclick="airbusWarning()">Airbus Warning</button>
+        <button onclick="airbusWarningToggle()">Airbus Warning Toggle</button>
+        <button onclick="airbusStall()">Airbus Stall</button>
     </div>
 
     <script>
@@ -32,7 +45,7 @@
             const endTime = startTime + 1;
 
             gainNode.gain.setValueAtTime(0, startTime);
-            gainNode.gain.linearRampToValueAtTime(1, startTime + 0.02);
+            gainNode.gain.linearRampToValueAtTime(0.5, startTime + 0.02);
             gainNode.gain.exponentialRampToValueAtTime(0.01, endTime);
 
             oscillator.start(startTime);
@@ -56,6 +69,82 @@
             setTimeout(() => {
                 playChime(494)
             }, 1000);
+        }
+
+        function acarsCall() {
+            // D5
+            playChime(1174)
+            // B4
+            setTimeout(() => {
+                playChime(587)
+            }, 500);
+        }
+
+        function airbusWarning() {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
+
+            oscillator.type = 'triangle';
+            oscillator.frequency.value = 1003;
+
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+
+            // Start and stop the oscillator to create the chime pattern
+            const startTime = context.currentTime;
+            const endTime = startTime + 0.7;
+
+            gainNode.gain.setValueAtTime(0, startTime);
+            gainNode.gain.linearRampToValueAtTime(0.5, startTime + 0.0);
+            gainNode.gain.linearRampToValueAtTime(0.01, endTime);
+
+            oscillator.start(startTime);
+            oscillator.stop(endTime);
+        }
+
+        let intervalId = null;
+        function airbusWarningToggle() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            } else {
+                airbusWarning();
+                intervalId = setInterval(() => {
+                    airbusWarning();
+                }, 250);
+            }
+        }
+
+        function airbusStallFreq(freq, delay) {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
+
+            oscillator.type = 'triangle';
+            oscillator.frequency.value = freq;
+
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+
+            // Start and stop the oscillator to create the chime pattern
+            const startTime = context.currentTime + delay;
+            const endTime = startTime + (0.8 / 16);
+
+            gainNode.gain.setValueAtTime(0, startTime);
+            gainNode.gain.linearRampToValueAtTime(0.5, startTime + 0.0);
+            // gainNode.gain.linearRampToValueAtTime(0.01, endTime);   
+
+            oscillator.start(startTime);
+            oscillator.stop(endTime);
+        }
+
+        function airbusStall() {
+            for (let i = 0; i < 16; i++) {
+                airbusStallFreq(i % 2 == 0 ? 1620 : 927, 0.8 / 16 * i);
+            }
         }
     </script>
 </body>
